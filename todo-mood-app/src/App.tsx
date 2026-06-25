@@ -1,10 +1,9 @@
+import AppRouter from './routes/AppRouter'
 import './App.css'
 
 function App() {
   return (
-    <>
-      todo-mood-app
-    </>
+    <AppRouter />
   )
 }
 
