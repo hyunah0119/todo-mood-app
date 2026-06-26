@@ -1,7 +1,8 @@
 import MenuLink from './MenuLink';
+import { useEffect } from 'react';
+import { useUserStore } from '@/store/userStore'
+import { useNavigate } from 'react-router-dom';
 
-import { useThemeStore } from '@/store/themeStore'
-import { useState } from 'react';
 import { IoMenu } from "react-icons/io5";
 import { FaUserAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -9,27 +10,57 @@ import { TbMoodTongueWink2 } from "react-icons/tb";
 import { CiBoxList } from "react-icons/ci";
 import { IoLogOutOutline } from "react-icons/io5";
 
-const SideMenu = () => {
-  const { toggleTheme } = useThemeStore();
-  const [isOpen, setIsOpen] = useState(false);
+type HeaderProps = {
+  menuOpen : boolean;
+  onClick : () => void;
+  onClose : () => void;
+  userName : string;
+}
+
+const SideMenu = ({ menuOpen, onClick, onClose, userName } : HeaderProps) => {
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+
+    return () => {
+      document.body.style.overflow = "";
+    }
+  }, [menuOpen]);
+
+  const { logout } = useUserStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    onClose();
+    logout();
+    navigate('/')
+  }
 
   return (
     <>
-      <button className='cursor-pointer'>
+      {/* menu open btn */}
+      <button className='cursor-pointer' onClick={onClick}>
         <IoMenu className="text-2xl" />
       </button>
 
-      {/* isOpen: true */}
-      <div className='w-full bg-black opacity-60 absolute inset-0'></div>
-      <div className='w-85 h-screen bg-white absolute top-0 right-0 flex flex-col justify-between pb-8'>
+      {/* menuOpen: true */}
+      <div 
+        className={`absolute inset-0 bg-black dark:bg-neutral-700 transition-opacity duration-250 ${menuOpen ? "opacity-60 dark:opacity-80" : "opacity-0 pointer-events-none"}`}
+        onClick={onClose}
+      ></div>
+      <div 
+        className={`absolute top-0 right-0 h-screen w-80 bg-white dark:bg-neutral-800 flex flex-col justify-between pb-8 transition-transform duration-250 ease-in-out 
+        ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div>
           <div className='w-full h-12.5 border-b border-gray-300 flex items-center justify-between px-5'>
             <div className='flex items-center gap-1.5 text-base'>
               <FaUserAlt />
-              <p>user name</p>
+              <p>{userName}</p>
             </div>
-  
-            <button className='cursor-pointer'>
+
+            {/* close btn */}
+            <button className='cursor-pointer' onClick={onClose}>
               <IoClose className='text-xl' />
             </button>
           </div>
@@ -43,9 +74,14 @@ const SideMenu = () => {
             </MenuLink>
           </ul>
         </div>
-
+        
+        {/* logout btn */}
         <div className='mt-12.5 self-center'>
-          <button className='flex items-center gap-1 text-sm text-[#666] hover:text-[#333] font-medium hover:font-bold transition-colors duration-300 cursor-pointer'>
+          <button 
+            className='flex items-center gap-1 text-sm text-[#666] dark:text-neutral-400 hover:text-[#333] dark:hover:text-white 
+            font-medium hover:font-bold transition-colors duration-300 cursor-pointer'
+            onClick={handleLogout}
+          >
             <IoLogOutOutline className='text-lg' />
             로그아웃
           </button>

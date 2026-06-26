@@ -1,6 +1,12 @@
+import TodayMoodCard from "@/components/todo/TodayMoodCard"
+import DateSelector from "@/components/todo/DateSelector"
+
 const Todo = () => {
   return (
-    <div>Todo</div>
+    <div className="w-full h-full py-2 px-5">
+      <TodayMoodCard />
+      <DateSelector />
+    </div>
   )
 }
 
