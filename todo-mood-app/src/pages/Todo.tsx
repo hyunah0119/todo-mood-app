@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { supabase } from "@/supabase/client";
+import { useTodos } from "@/hooks/useTodos";
+import { useUserStore } from "@/store/userStore";
+import { useSelectedDateStore } from "@/store/selectedDateStore";
 
 import TodayMoodCard from "@/components/todo/TodayMoodCard"
 import DateSelector from "@/components/todo/DateSelector"
@@ -8,18 +9,10 @@ import TodoToolbar from "@/components/todo/TodoToolbar"
 import TodoList from "@/components/todo/TodoList"
 
 const Todo = () => {
-  useEffect(() => {
-    const test = async () => {
-      const { data, error } = await supabase
-        .from("todos")
-        .select("*");
-
-      console.log(data);
-      console.log(error);
-    };
-
-    test();
-  }, []);
+  const { userName } = useUserStore();
+  const { selectedDate } = useSelectedDateStore();
+  const { data } = useTodos(userName, selectedDate.format('YYYY-MM-DD'));
+  console.log(data)
 
   return (
     <div className="w-full h-full py-2 px-5">
@@ -27,7 +20,7 @@ const Todo = () => {
       <DateSelector />
       <TodoForm />
       <TodoToolbar />
-      <TodoList />
+      <TodoList todos={data ?? []} />
     </div>
   )
 }
