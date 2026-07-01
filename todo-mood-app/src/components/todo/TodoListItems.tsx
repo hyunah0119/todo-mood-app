@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useUpdateTodoCompleted } from "@/hooks/useTodos";
+import { useDeleteTodo } from "@/hooks/useTodos";
 
 import { FaCheck } from "react-icons/fa6";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -10,11 +12,27 @@ type todolistProps = {
   id : number
 }
 
-const TodoListItems = ({ text, completed } : todolistProps) => {
+const TodoListItems = ({ text, completed, id } : todolistProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { mutate:updateTodoMutate } = useUpdateTodoCompleted();
+  const { mutate:deleteTodoMutate } = useDeleteTodo();
 
-  const handleKebabMenuToggle = () => {
+  const handleKebabMenuToggle = (e:React.MouseEvent) => {
+    e.stopPropagation();
     setIsOpen(!isOpen)
+  }
+
+  const handleOnCompleted = () => {
+    updateTodoMutate ({
+      id: id,
+      completed : !completed
+    })
+  }
+
+  const handleDeleteTodo = () => {
+    deleteTodoMutate ({
+      id: id
+    })
   }
 
   return (
@@ -23,6 +41,7 @@ const TodoListItems = ({ text, completed } : todolistProps) => {
         className={`flex justify-between items-center
         rounded-lg ${completed ? 'bg-neutral-200' : 'bg-neutral-50 hover:bg-neutral-100'}
         shadow-md px-2.5 py-2.5 box-border mb-2 transition-colors duration-200 cursor-pointer`}
+        onClick={handleOnCompleted}
       >
         <div>
           <input type="checkbox" id="todo-checkbox" />
@@ -42,7 +61,10 @@ const TodoListItems = ({ text, completed } : todolistProps) => {
           {isOpen &&
             <div className="flex flex-col w-25 px-5 py-2 border rounded-md absolute top-5 right-2 border-neutral-300 bg-white text-neutral-500 z-10">
               <button className="border-b border-neutral-300 pb-2 text-sm cursor-pointer">수정하기</button>
-              <button className="pt-2 text-sm cursor-pointer">삭제하기</button>
+              <button 
+                className="pt-2 text-sm cursor-pointer"
+                onClick={handleDeleteTodo}
+              >삭제하기</button>
             </div>
           }
         </div>

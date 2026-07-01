@@ -28,7 +28,37 @@ export const addTodos = async (user_name:string, date:string, text:string, compl
         completed,
         order_index
       }
-  ]);
+    ]);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+// 완료 업데이트
+export const updateTodoCompleted = async (id:number, completed:boolean) => {
+  const { data, error } = await supabase
+    .from('todos')
+    .update({
+      completed
+    })
+    .eq('id', id)
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+// 삭제
+export const deleteTodo = async (id:number) => {
+  const { data, error } = await supabase
+    .from('todos')
+    .delete()
+    .eq('id', id)
 
   if (error) {
     throw error;
