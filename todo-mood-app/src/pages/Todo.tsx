@@ -12,13 +12,12 @@ const Todo = () => {
   const { userName } = useUserStore();
   const { selectedDate } = useSelectedDateStore();
   const { data } = useTodos(userName, selectedDate.format('YYYY-MM-DD'));
-  console.log(data)
 
   return (
     <div className="w-full h-full py-2 px-5">
       <TodayMoodCard />
       <DateSelector />
-      <TodoForm />
+      <TodoForm orderIndex={(data?.length ?? 0) + 1} />
       <TodoToolbar />
       <TodoList todos={data ?? []} />
     </div>
