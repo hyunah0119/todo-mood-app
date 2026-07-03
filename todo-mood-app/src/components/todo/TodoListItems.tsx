@@ -11,27 +11,26 @@ type todolistProps = {
   text : string
   completed : boolean
   id : number
+  isOpen: boolean;
+  onToggleMenu: () => void;
+  onCloseMenu: () => void;
 }
 
-const TodoListItems = ({ text, completed, id } : todolistProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+const TodoListItems = ({ text, completed, id, isOpen, onToggleMenu, onCloseMenu } : todolistProps) => {
   const [modifyMode, setModifyMode] = useState(false);
   const [modifyText, setModifyText] = useState(text);
   const { mutate:updateTodoMutate } = useUpdateTodoCompleted();
   const { mutate:deleteTodoMutate } = useDeleteTodo();
   const { mutate:modifyTodoMutate } = useModifyTodo();
 
-  // kebab menue toggle
-  const handleKebabMenuToggle = (e:React.MouseEvent) => {
-    e.stopPropagation();
-    setIsOpen(!isOpen)
-  }
-
   // 완료
   const handleOnCompleted = () => {
     updateTodoMutate ({
       id: id,
       completed : !completed
+    },
+    {
+      onSuccess : onCloseMenu
     })
   }
 
@@ -50,6 +49,7 @@ const TodoListItems = ({ text, completed, id } : todolistProps) => {
 
     setModifyText(text);
     setModifyMode(true);
+    onCloseMenu();
   }
 
   const handleModifyTextSave = (e: React.FormEvent<HTMLFormElement>) => {
@@ -63,7 +63,7 @@ const TodoListItems = ({ text, completed, id } : todolistProps) => {
       {
         onSuccess: () => {
           setModifyMode(false);
-          setIsOpen(false);
+          onCloseMenu();
         },
       }
     );
@@ -92,6 +92,7 @@ const TodoListItems = ({ text, completed, id } : todolistProps) => {
               <button 
                 className="text-xl text-amber-400 cursor-pointer"
                 type="submit"
+                onClick={(e) => e.stopPropagation()}
               >
                 <FaCheckCircle />
               </button>
@@ -114,7 +115,10 @@ const TodoListItems = ({ text, completed, id } : todolistProps) => {
             <div className="relative">
               <button 
                 className="block cursor-pointer text-lg" 
-                onClick={handleKebabMenuToggle}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onToggleMenu()
+                }}
               ><HiOutlineDotsVertical /></button>
 
               {isOpen &&

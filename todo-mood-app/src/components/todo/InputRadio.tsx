@@ -1,10 +1,16 @@
+type FilterType = "all" | "complete" | "incomplete";
+
 type inputRadioProps = {
   htmlFor : string,
   children : string,
   radioName : string,
+  value : FilterType,
+
+  filter : FilterType,
+  setFilter : React.Dispatch<React.SetStateAction<FilterType>>,
 }
 
-const InputRadio = ({ htmlFor, children, radioName } : inputRadioProps) => {
+const InputRadio = ({ htmlFor, children, radioName, value, filter, setFilter } : inputRadioProps) => {
   return (
     <label 
       htmlFor={htmlFor}
@@ -15,6 +21,9 @@ const InputRadio = ({ htmlFor, children, radioName } : inputRadioProps) => {
         className="mr-1.25"
         id={htmlFor}
         name={radioName}
+        value={value}
+        checked={filter === value}
+        onChange={() => setFilter(value)}
       />
       <span className="text-sm">{children}</span>
     </label>
