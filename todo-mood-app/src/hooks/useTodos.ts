@@ -3,6 +3,7 @@ import { getTodos } from '@/services/todo'
 import { addTodos } from "@/services/todo";
 import { updateTodoCompleted } from "@/services/todo";
 import { deleteTodo } from "@/services/todo";
+import { modifyTodo } from "@/services/todo";
 import { useUserStore } from "@/store/userStore";
 import { useSelectedDateStore } from "@/store/selectedDateStore";
 
@@ -21,6 +22,11 @@ type UpdateTodoCompletedParams = {
 
 type DeleteTodoParams = {
   id: number;
+};
+
+type ModifyTodoParams = {
+  id: number;
+  text: string;
 };
 
 // 조회
@@ -72,6 +78,23 @@ export const useDeleteTodo = () => {
 
   return useMutation({
     mutationFn : (todo:DeleteTodoParams) => deleteTodo(todo.id),
+    onSuccess : () => {
+      queryClient.invalidateQueries({ queryKey: ["todos", userName, selectedDate.format('YYYY-MM-DD')] })
+    },
+    onError : (error) => {
+      console.error('에러 발생 : ', error)
+    }
+  })
+}
+
+// 수정
+export const useModifyTodo = () => {
+  const queryClient = useQueryClient();
+  const { userName } = useUserStore();
+  const { selectedDate } = useSelectedDateStore();
+
+  return useMutation({
+    mutationFn : (todo:ModifyTodoParams) => modifyTodo(todo.id, todo.text),
     onSuccess : () => {
       queryClient.invalidateQueries({ queryKey: ["todos", userName, selectedDate.format('YYYY-MM-DD')] })
     },

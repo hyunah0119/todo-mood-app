@@ -66,3 +66,19 @@ export const deleteTodo = async (id:number) => {
 
   return data;
 }
+
+// 수정
+export const modifyTodo = async (id:number, text:string) => {
+  const { data, error } = await supabase
+    .from('todos')
+    .update({
+      text
+    })
+    .eq('id', id)
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
