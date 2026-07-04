@@ -5,6 +5,7 @@ import { useModifyTodo } from "@/hooks/useTodos";
 import { FaCheck } from "react-icons/fa6";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaCheckCircle } from "react-icons/fa";
+import { MdDragIndicator } from "react-icons/md";
 
 type todolistProps = {
   text : string
@@ -14,9 +15,10 @@ type todolistProps = {
   onToggleMenu: () => void;
   onCloseMenu: () => void;
   onToggleComplete: (id:number) => void;
+  isSortMode : boolean;
 }
 
-const TodoListItems = ({ text, completed, id, isOpen, onToggleMenu, onCloseMenu, onToggleComplete } : todolistProps) => {
+const TodoListItems = ({ text, completed, id, isOpen, onToggleMenu, onCloseMenu, onToggleComplete, isSortMode } : todolistProps) => {
   const [modifyMode, setModifyMode] = useState(false);
   const [modifyText, setModifyText] = useState(text);
   const { mutate:deleteTodoMutate } = useDeleteTodo();
@@ -93,7 +95,8 @@ const TodoListItems = ({ text, completed, id, isOpen, onToggleMenu, onCloseMenu,
           </div>
         ) : (
           <>
-            <div>
+            <div className="flex items-center">
+              {isSortMode && !completed && <MdDragIndicator className="text-lg mr-2" />}
               <input type="checkbox" id="todo-checkbox" />
               <div className="flex items-center gap-2">
                 <span className={`w-3.75 h-3.75 border rounded-4xl 

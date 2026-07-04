@@ -8,10 +8,12 @@ type FilterType = "all" | "complete" | "incomplete";
 type filterProps = {
   filter : FilterType,
   setFilter : React.Dispatch<React.SetStateAction<FilterType>>
+  isSortMode : boolean,
+  setIsSortMode : React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const TodoToolbar = ({ filter, setFilter} : filterProps) => {
-  const customButton = 'flex items-center gap-1.25 text-sm cursor-pointer';
+const TodoToolbar = ({ filter, setFilter, isSortMode, setIsSortMode } : filterProps) => {
+  const customButton = 'flex items-center gap-1.25 text-sm';
 
   return (
     <div className="flex justify-between items-center mt-7.5">
@@ -21,7 +23,11 @@ const TodoToolbar = ({ filter, setFilter} : filterProps) => {
       />
 
       <div className="flex items-center gap-3.75">
-        <button className={`${customButton}`}>
+        <button 
+          className={`${customButton} ${filter === "all" ? 'cursor-pointer' : ''} ${isSortMode ? 'text-amber-400' : ''}`} 
+          onClick={() => setIsSortMode(prev => !prev)}
+          disabled={filter !== "all"}
+        >
           <MdDragIndicator className="text-lg" /> 정렬
         </button>
         

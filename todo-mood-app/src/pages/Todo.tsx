@@ -17,6 +17,7 @@ const Todo = () => {
   const { data } = useTodos(userName, selectedDate.format('YYYY-MM-DD'));
 
   const [filter, setFilter] = useState<FilterType>("all");
+  const [isSortMode, setIsSortMode] = useState(false);
 
   let filteredTodos = data ?? [];
 
@@ -36,10 +37,13 @@ const Todo = () => {
       <TodoToolbar 
         filter={filter}
         setFilter={setFilter}
+        isSortMode={isSortMode}
+        setIsSortMode={setIsSortMode}
       />
       <TodoList 
         todos={filteredTodos} 
         filter={filter} 
+        isSortMode={isSortMode}
       />
     </div>
   )
