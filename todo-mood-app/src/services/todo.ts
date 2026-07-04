@@ -42,7 +42,24 @@ export const updateTodoCompleted = async (id:number, completed:boolean) => {
   const { data, error } = await supabase
     .from('todos')
     .update({
-      completed
+      completed,
+    })
+    .eq('id', id)
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+// 완료 후 정렬
+export const updateTodoOrderIndex = async (id:number, completed:boolean, order_index:number) => {
+  const { data, error } = await supabase
+    .from('todos')
+    .update({
+      completed,
+      order_index
     })
     .eq('id', id)
 

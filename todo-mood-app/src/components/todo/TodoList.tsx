@@ -1,7 +1,8 @@
-import TodoListItems from "./TodoListItems"
+import { useState } from "react";
+import TodoListItems from "./TodoListItems";
+import { useUpdateTodoOrderIndex } from "@/hooks/useTodos";
 import EmptyTodo from "./EmptyTodo";
 import type { Todo } from '@/types/todo'
-import { useState } from "react";
 
 type FilterType = "all" | "complete" | "incomplete";
 
@@ -12,7 +13,34 @@ interface TodoListProps {
 
 const TodoList = ({ todos, filter }: TodoListProps) => {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const { mutate } = useUpdateTodoOrderIndex();
 
+  // 완료 항목 아래로 재배열
+  const handleToggleCompleted = (id:number) => {
+    const updateTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed : !todo.completed,
+        };
+      }
+
+      return todo;
+    });
+    
+    const incompleteTodos = updateTodos.filter(todo => !todo.completed);
+    const completeTodos = updateTodos.filter(todo => todo.completed);
+
+    const reorderedTodos = [...incompleteTodos, ...completeTodos];
+
+    const reorderedWithIndex = reorderedTodos.map((todo, index) => ({
+      ...todo,
+      order_index : index + 1,
+    }));
+
+    mutate(reorderedWithIndex)
+  }
+  
   return (
     <div className="mt-5">
       <h3 className="text-sm tracking-wide font-medium text-neutral-400">오늘의 할 일</h3>
@@ -30,6 +58,7 @@ const TodoList = ({ todos, filter }: TodoListProps) => {
               isOpen={openMenuId === todo.id}
               onToggleMenu={() => setOpenMenuId(openMenuId === todo.id ? null : todo.id)}
               onCloseMenu={() => setOpenMenuId(null)}
+              onToggleComplete={handleToggleCompleted}
             />
           ))
         )}

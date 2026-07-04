@@ -37,7 +37,10 @@ const Todo = () => {
         filter={filter}
         setFilter={setFilter}
       />
-      <TodoList todos={filteredTodos} filter={filter} />
+      <TodoList 
+        todos={filteredTodos} 
+        filter={filter} 
+      />
     </div>
   )
 }

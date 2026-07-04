@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useUpdateTodoCompleted } from "@/hooks/useTodos";
 import { useDeleteTodo } from "@/hooks/useTodos";
 import { useModifyTodo } from "@/hooks/useTodos";
 
@@ -14,24 +13,18 @@ type todolistProps = {
   isOpen: boolean;
   onToggleMenu: () => void;
   onCloseMenu: () => void;
+  onToggleComplete: (id:number) => void;
 }
 
-const TodoListItems = ({ text, completed, id, isOpen, onToggleMenu, onCloseMenu } : todolistProps) => {
+const TodoListItems = ({ text, completed, id, isOpen, onToggleMenu, onCloseMenu, onToggleComplete } : todolistProps) => {
   const [modifyMode, setModifyMode] = useState(false);
   const [modifyText, setModifyText] = useState(text);
-  const { mutate:updateTodoMutate } = useUpdateTodoCompleted();
   const { mutate:deleteTodoMutate } = useDeleteTodo();
   const { mutate:modifyTodoMutate } = useModifyTodo();
 
   // 완료
   const handleOnCompleted = () => {
-    updateTodoMutate ({
-      id: id,
-      completed : !completed
-    },
-    {
-      onSuccess : onCloseMenu
-    })
+    onToggleComplete(id);
   }
 
   // 삭제

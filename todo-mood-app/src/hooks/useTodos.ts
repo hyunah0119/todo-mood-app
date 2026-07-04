@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTodos } from '@/services/todo'
 import { addTodos } from "@/services/todo";
 import { updateTodoCompleted } from "@/services/todo";
+import { updateTodoOrderIndex } from "@/services/todo";
 import { deleteTodo } from "@/services/todo";
 import { modifyTodo } from "@/services/todo";
 import { useUserStore } from "@/store/userStore";
@@ -18,6 +19,12 @@ type AddTodoParams = {
 type UpdateTodoCompletedParams = {
   id: number;
   completed: boolean;
+};
+
+type UpdateTodoOrderIndexParams = {
+  id: number;
+  completed: boolean;
+  order_index: number;
 };
 
 type DeleteTodoParams = {
@@ -60,7 +67,30 @@ export const useUpdateTodoCompleted = () => {
   const { selectedDate } = useSelectedDateStore();
 
   return useMutation({
-    mutationFn : (todo:UpdateTodoCompletedParams) => updateTodoCompleted(todo.id, todo.completed),
+    mutationFn: (todo:UpdateTodoCompletedParams) => updateTodoCompleted(todo.id, todo.completed),
+    onSuccess : () => {
+      queryClient.invalidateQueries({ queryKey: ["todos", userName, selectedDate.format('YYYY-MM-DD')] })
+    },
+    onError : (error) => {
+      console.error('에러 발생 : ', error)
+    }
+  })
+}
+
+// 완료 후 순서 업데이트
+export const useUpdateTodoOrderIndex = () => {
+  const queryClient = useQueryClient();
+  const { userName } = useUserStore();
+  const { selectedDate } = useSelectedDateStore();
+
+  return useMutation({
+    mutationFn: async (todos: UpdateTodoOrderIndexParams[]) => {
+      return Promise.all(
+        todos.map((todo) =>
+          updateTodoOrderIndex(todo.id, todo.completed, todo.order_index)
+        )
+      );
+    },
     onSuccess : () => {
       queryClient.invalidateQueries({ queryKey: ["todos", userName, selectedDate.format('YYYY-MM-DD')] })
     },
