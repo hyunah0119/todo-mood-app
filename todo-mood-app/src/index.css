@@ -49,6 +49,10 @@
   color: white;
 }
 
+.dark .rdp-chevron {
+  fill: var(--color-neutral-100);
+}
+
 /* input custom */
 input[type="radio"] {
   appearance: none;
@@ -80,12 +84,22 @@ input[type="checkbox"] {
   clip-path: inset(50%);
 }
 
-/* dark
-text-neutral-400
-bg-neutral-950
-bg-neutral-900
-*/
+/* todo list scrollbar */
+.todo-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
 
-/* point
-border-amber-400
-*/
+.todo-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.todo-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background-color: #a3a3a3;
+}
+
+.todo-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}

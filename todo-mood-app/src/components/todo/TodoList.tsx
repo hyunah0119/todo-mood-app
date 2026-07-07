@@ -14,9 +14,12 @@ interface TodoListProps {
   todos: Todo[];
   filter : FilterType;
   isSortMode : boolean;
+  isDeleteMode : boolean;
+  selectedTodoIds : number[];
+  onToggleSelectTodo : (id:number) => void;
 }
 
-const TodoList = ({ todos, filter, isSortMode }: TodoListProps) => {
+const TodoList = ({ todos, filter, isSortMode, isDeleteMode, selectedTodoIds, onToggleSelectTodo }: TodoListProps) => {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [localTodos, setLocalTodos] = useState<Todo[]>(todos);
   const { mutate } = useUpdateTodoOrderIndex();
@@ -77,10 +80,10 @@ const TodoList = ({ todos, filter, isSortMode }: TodoListProps) => {
   };
   
   return (
-    <div className="mt-5">
+    <div className="mt-5 min-h-0 flex-1 flex flex-col">
       <h3 className="text-sm tracking-wide font-medium text-neutral-400">오늘의 할 일</h3>
 
-      <div className="mt-3.75"> 
+      <div className="todo-scrollbar mt-3.75 min-h-0 flex-1 overflow-y-auto pr-1"> 
         {sortedTodos.length === 0 ? (
           <EmptyTodo filter={filter} />
         ) : (
@@ -95,10 +98,13 @@ const TodoList = ({ todos, filter, isSortMode }: TodoListProps) => {
                         text={todo.text}
                         completed={todo.completed}
                         isOpen={openMenuId === todo.id}
-                        onToggleMenu={() => setOpenMenuId(openMenuId === todo.id ? null : todo.id)}
+                        onToggleMenu={() => setOpenMenuId(prev => prev === todo.id ? null : todo.id)}
                         onCloseMenu={() => setOpenMenuId(null)}
                         onToggleComplete={handleToggleCompleted}
                         isSortMode={isSortMode}
+                        isDeleteMode={isDeleteMode}
+                        selectedTodoIds={selectedTodoIds}
+                        onToggleSelectTodo={onToggleSelectTodo}
                       />
                     </SortableTodoListItem>
                   ))}
@@ -116,6 +122,9 @@ const TodoList = ({ todos, filter, isSortMode }: TodoListProps) => {
                   onCloseMenu={() => setOpenMenuId(null)}
                   onToggleComplete={handleToggleCompleted}
                   isSortMode={isSortMode}
+                  isDeleteMode={isDeleteMode}
+                  selectedTodoIds={selectedTodoIds}
+                  onToggleSelectTodo={onToggleSelectTodo}
                 />
               ))
             )}
@@ -131,6 +140,9 @@ const TodoList = ({ todos, filter, isSortMode }: TodoListProps) => {
                 onCloseMenu={() => setOpenMenuId(null)}
                 onToggleComplete={handleToggleCompleted}
                 isSortMode={isSortMode}
+                isDeleteMode={isDeleteMode}
+                selectedTodoIds={selectedTodoIds}
+                onToggleSelectTodo={onToggleSelectTodo}
               />
             ))}
           </>

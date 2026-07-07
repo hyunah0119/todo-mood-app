@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { removeSavedUserName } from '@/utils/userNameStorage'
 
 interface userStore {
   userName : string,
@@ -10,7 +11,7 @@ export const useUserStore = create<userStore>((set) => ({
   userName : '',
   setUserName : (name) => set({ userName : name }),
   logout : () => {
-    localStorage.removeItem("userName");
+    removeSavedUserName();
     set({
       userName: ''
     })

@@ -1,4 +1,5 @@
 import { useUserStore } from '@/store/userStore'
+import { saveUserName } from '@/utils/userNameStorage';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,7 +23,7 @@ const Home = () => {
       return;
     };
 
-    localStorage.setItem("userName", inputName);
+    saveUserName(inputName);
     setUserName(inputName);
     navigate("/todo");
   }

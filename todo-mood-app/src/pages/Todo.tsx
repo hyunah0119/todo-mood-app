@@ -1,10 +1,12 @@
 import { useTodos } from "@/hooks/useTodos";
 import { useUserStore } from "@/store/userStore";
 import { useSelectedDateStore } from "@/store/selectedDateStore";
+import { useDeleteTodo } from "@/hooks/useTodos";
 
 import TodayMoodCard from "@/components/todo/TodayMoodCard"
 import DateSelector from "@/components/todo/DateSelector"
 import TodoForm from "@/components/todo/TodoForm"
+import TodoProgressBar from "@/components/todo/TodoProgressBar"
 import TodoToolbar from "@/components/todo/TodoToolbar"
 import TodoList from "@/components/todo/TodoList"
 import { useState } from "react";
@@ -29,8 +31,41 @@ const Todo = () => {
     filteredTodos = filteredTodos.filter((item) => item.completed === false)
   }
 
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [selectedTodoIds, setSelectedTodoIds] = useState<number[]>([]);
+
+  const handleToggleSelectTodo = (id:number) => {
+    setSelectedTodoIds(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    )
+  }
+
+  const { mutate:deleteTodoMutate } = useDeleteTodo();
+
+  const handleDeleteSelectedTodos = () => {
+    if (selectedTodoIds.length === 0) {
+      alert("삭제할 항목을 선택해주세요.");
+      return;
+    }
+
+    selectedTodoIds.forEach(id => {
+      deleteTodoMutate({ id });
+    });
+    
+    setIsDeleteMode(false);
+    setSelectedTodoIds([]);
+  }
+
   return (
-    <div className="w-full h-full py-2 px-5">
+    <div
+      className="w-full h-full min-h-0 py-2 px-5 flex flex-col"
+      onClick={() => {
+        if (isDeleteMode) {
+          setIsDeleteMode(false);
+          setSelectedTodoIds([]);
+        }
+      }}
+    >
       <TodayMoodCard />
       <DateSelector />
       <TodoForm orderIndex={(data?.length ?? 0) + 1} />
@@ -39,12 +74,21 @@ const Todo = () => {
         setFilter={setFilter}
         isSortMode={isSortMode}
         setIsSortMode={setIsSortMode}
+        isDeleteMode={isDeleteMode}
+        setIsDeleteMode={setIsDeleteMode}
+        onDeleteSelectedTodos={handleDeleteSelectedTodos}
       />
-      <TodoList 
-        todos={filteredTodos} 
-        filter={filter} 
-        isSortMode={isSortMode}
-      />
+      <TodoProgressBar todos={data ?? []} />
+      <div className="min-h-0 flex-1 flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <TodoList 
+          todos={filteredTodos} 
+          filter={filter} 
+          isSortMode={isSortMode}
+          isDeleteMode={isDeleteMode}
+          selectedTodoIds={selectedTodoIds}
+          onToggleSelectTodo={handleToggleSelectTodo}
+        />
+      </div>
     </div>
   )
 }

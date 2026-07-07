@@ -1,5 +1,6 @@
 import AppRouter from './routes/AppRouter'
 import { useUserStore } from '@/store/userStore'
+import { getSavedUserName } from '@/utils/userNameStorage'
 import { useEffect } from 'react'
 import './App.css'
 
@@ -7,12 +8,12 @@ function App() {
   const { setUserName } = useUserStore();
 
   useEffect(() => {
-    const saveUser = localStorage.getItem('userName');
+    const savedUserName = getSavedUserName();
 
-    if (saveUser) {
-      setUserName(saveUser)
+    if (savedUserName) {
+      setUserName(savedUserName)
     }
-  }, []);
+  }, [setUserName]);
 
   return (
     <AppRouter />
