@@ -44,7 +44,7 @@ const SideMenu = ({ menuOpen, onClick, onClose, userName } : HeaderProps) => {
 
       {/* menuOpen: true */}
       <div 
-        className={`absolute inset-0 bg-black dark:bg-neutral-700 transition-opacity duration-250 ${menuOpen ? "opacity-60 dark:opacity-80" : "opacity-0 pointer-events-none"}`}
+        className={`absolute inset-0 bg-black dark:bg-neutral-700 transition-opacity duration-250 z-100 ${menuOpen ? "opacity-60 dark:opacity-80" : "opacity-0 pointer-events-none"}`}
         onClick={onClose}
       ></div>
       <div 
@@ -66,10 +66,10 @@ const SideMenu = ({ menuOpen, onClick, onClose, userName } : HeaderProps) => {
           </div>
   
           <ul className='w-full pt-20 flex flex-col gap-5'>
-            <MenuLink to='/todo'>
+            <MenuLink to='/todo' onClick={onClose}>
               <CiBoxList /> Todo List
             </MenuLink>
-            <MenuLink to='/mood'>
+            <MenuLink to='/mood' onClick={onClose}>
               <TbMoodTongueWink2 /> Mood Tracker
             </MenuLink>
           </ul>

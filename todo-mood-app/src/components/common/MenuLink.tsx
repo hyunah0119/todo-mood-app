@@ -3,13 +3,15 @@ import { NavLink } from "react-router-dom";
 type MenuLinkProps = {
   children : React.ReactNode;
   to : string;
+  onClick? : () => void;
 }
 
-const MenuLink = ( {children, to} : MenuLinkProps ) => {
+const MenuLink = ( {children, to, onClick} : MenuLinkProps ) => {
   return (
     <li className="text-[#666] dark:text-white hover:text-black transition-colors duration-300">
       <NavLink
         to={to}
+        onClick={onClick}
         className={({isActive}) => 
           `flex items-center gap-2 border-l-2 py-2 pl-4 pr-4 transition-colors duration-300 box-border
           ${isActive ? 
