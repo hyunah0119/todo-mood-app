@@ -53,6 +53,26 @@
   fill: var(--color-neutral-100);
 }
 
+.mood-calendar .rdp-root,
+.mood-calendar .rdp-months,
+.mood-calendar .rdp-month,
+.mood-calendar .rdp-month_grid {
+  width: 100%;
+  max-width: none;
+}
+
+.mood-calendar .rdp-weekdays,
+.mood-calendar .rdp-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.mood-calendar .rdp-weekday,
+.mood-calendar .rdp-day {
+  display: flex;
+  justify-content: center;
+}
+
 /* input custom */
 input[type="radio"] {
   appearance: none;

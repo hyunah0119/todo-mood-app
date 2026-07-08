@@ -9,6 +9,8 @@ const MoodType = {
   'SICK' : '🤒',
 };
 
+export type MoodType = keyof typeof MoodType;
+
 export interface Mood {
   id : number,
   user_name : string,
