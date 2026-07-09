@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTodos } from '@/services/todo'
-import { addTodos } from "@/services/todo";
-import { updateTodoCompleted } from "@/services/todo";
-import { updateTodoOrderIndex } from "@/services/todo";
-import { deleteTodo } from "@/services/todo";
-import { modifyTodo } from "@/services/todo";
+
+import { 
+  getTodos, addTodos, 
+  updateTodoCompleted, updateTodoOrderIndex, 
+  deleteTodo, modifyTodo 
+} from '@/services/todo'
+
 import { useUserStore } from "@/store/userStore";
 import { useSelectedDateStore } from "@/store/selectedDateStore";
 

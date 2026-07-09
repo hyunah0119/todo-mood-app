@@ -1,3 +1,4 @@
+import type { Mood } from "@/types/mood";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 
@@ -9,7 +10,11 @@ import { useSelectedDateStore } from '@/store/selectedDateStore';
 
 dayjs.locale('ko')
 
-const MoodCalendar = () => {
+interface MoodCalendarProps {
+  moodData: Mood[];
+}
+
+const MoodCalendar = ({ moodData }: MoodCalendarProps) => {
   const { selectedDate, setSelectedDate } = useSelectedDateStore();
 
   const year = new Date().getFullYear();

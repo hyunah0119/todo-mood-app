@@ -1,18 +1,62 @@
-import MoodItems from "./MoodItems"
-import MemoItems from "./MemoItems"
+import { useState } from "react";
+import { Dayjs } from "dayjs";
 
-const MoodList = () => {
+import { useAddMood } from "@/hooks/useMood";
+
+import MoodForm from "./MoodForm";
+import MemoForm from "./MemoForm";
+import MoodItems from "./MoodItems";
+import MemoItems from "./MemoItems";
+
+interface MoodListProps {
+  isMoodData: boolean | undefined;
+  isMemoData: boolean | undefined;
+  selectedDate: Dayjs;
+}
+
+const MoodList = ({ selectedDate, isMoodData, isMemoData }: MoodListProps) => {
+  const [isMoodFormVisible, setIsMoodFormVisible] = useState(false);
+  const [isMemoFormVisible, setIsMemoFormVisible] = useState(false);
+
+  const { mutate: addMood } = useAddMood();
+
+
+  const handleToggleMoodForm = () => {
+    setIsMoodFormVisible(prev => !prev);
+    setIsMemoFormVisible(false);
+  }
+
+  const handleToggleMemoForm = () => {
+    setIsMemoFormVisible(prev => !prev);
+    setIsMoodFormVisible(false);
+  }
+
   return (
-    <div>
-      <div className="mt-5">
-        <h3 className="text-sm tracking-wide font-medium text-neutral-400">오늘의 기분</h3>
-        <MoodItems />
-      </div>
+    <div className="mt-7.5">
+      <p className="text-lg font-medium">{selectedDate.format('MM월 DD일 (dd)')}</p>
 
-      <div className="mt-5">
-        <h3 className="text-sm tracking-wide font-medium text-neutral-400">오늘의 메모</h3>
-        <MemoItems />
+      <div>
+        <MoodForm 
+          isMoodFormVisible={isMoodFormVisible} 
+          onToggleMoodForm={handleToggleMoodForm} 
+          isMoodData={isMoodData}
+        />
+        <MoodItems 
+          isMoodData={isMoodData}
+        />
       </div>
+      {isMoodData &&
+        <div className="mt-7.5">
+          <MemoForm 
+            isMemoFormVisible={isMemoFormVisible} 
+            onToggleMemoForm={handleToggleMemoForm} 
+            isMemoData={isMemoData}
+          />
+          <MemoItems 
+            isMemoData={isMemoData}
+          />
+        </div>
+      }
     </div>
   )
 }
