@@ -17,13 +17,14 @@ type MoodFormProps = {
   onToggleMoodForm: () => void;
   onCloseMoodForm: () => void;
   isMoodData: boolean | undefined;
+  mood: MoodKey | undefined;
   selectedMood: MoodKey | null;
   onSelectedMood: (mood: MoodKey | null) => void;
   isEditingMood: boolean;
   setIsEditingMood: (isEditingMood: boolean) => void;
 }
 
-const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, onCloseMoodForm, isMoodData, selectedMood, onSelectedMood, isEditingMood, setIsEditingMood }: MoodFormProps) => {
+const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, onCloseMoodForm, isMoodData, mood, selectedMood, onSelectedMood, isEditingMood, setIsEditingMood }: MoodFormProps) => {
   const { userName } = useUserStore();
   const { selectedDate } = useSelectedDateStore();
   const { mutate: addMood } = useAddMood();
@@ -32,6 +33,8 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, onCloseMoodForm, isMood
 
   // mood 수정 모드 진입
   const handleEditMood = () => {
+    onSelectedMood(mood ?? null);
+
     if (!isMoodFormVisible) {
       onToggleMoodForm();
     }
@@ -61,9 +64,11 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, onCloseMoodForm, isMood
 
   // mood 수정
   const handleUpdateMood = () => {
-    if (selectedMood) {
+    const moodToUpdate = selectedMood ?? mood;
+
+    if (moodToUpdate) {
       updateMood({
-        mood: selectedMood
+        mood: moodToUpdate
       },
       {
         onSuccess: () => {

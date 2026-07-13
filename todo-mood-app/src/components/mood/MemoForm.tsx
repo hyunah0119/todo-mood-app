@@ -18,7 +18,7 @@ type MemoFormProps = {
   setIsEditingMemo: (isEditingMemo: boolean) => void;
 }
 
-const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData, memo, inputMemo, onInputMemo, isEditingMemo, setIsEditingMemo }: MemoFormProps) => {
+const MemoForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData, memo, inputMemo, onInputMemo, isEditingMemo, setIsEditingMemo }: MemoFormProps) => {
   const { mutate: addMemo } = useAddMemo();
   const { mutate: updateMemo } = useUpdateMemo();
   const { mutate: deleteMemo } = useDeleteMemo();
@@ -152,4 +152,4 @@ const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData, memo, input
   )
 }
 
-export default MoodForm
+export default MemoForm

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { removeSavedUserName } from '@/utils/userNameStorage'
+import { getSavedUserName, removeSavedUserName } from '@/utils/userNameStorage'
 
 interface userStore {
   userName : string,
@@ -8,7 +8,7 @@ interface userStore {
 }
 
 export const useUserStore = create<userStore>((set) => ({
-  userName : '',
+  userName : getSavedUserName(),
   setUserName : (name) => set({ userName : name }),
   logout : () => {
     removeSavedUserName();

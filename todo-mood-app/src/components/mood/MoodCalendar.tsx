@@ -1,4 +1,4 @@
-import type { Mood } from "@/types/mood";
+import { MoodOptions, type Mood } from "@/types/mood";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 
@@ -16,6 +16,7 @@ interface MoodCalendarProps {
 
 const MoodCalendar = ({ moodData }: MoodCalendarProps) => {
   const { selectedDate, setSelectedDate } = useSelectedDateStore();
+  const selectedMood = moodData[0]?.mood;
 
   const year = new Date().getFullYear();
   const maxYearDate = new Date(year + 1, 11);
@@ -38,6 +39,11 @@ const MoodCalendar = ({ moodData }: MoodCalendarProps) => {
             }
           }}
         />
+        {selectedMood && (
+          <p className="mt-2 text-center text-sm text-neutral-500 dark:text-neutral-300">
+            선택한 날짜의 기분: <span className="text-base">{MoodOptions[selectedMood].emoji}</span>
+          </p>
+        )}
       </div>
     </div>
   )

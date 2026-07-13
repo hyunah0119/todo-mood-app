@@ -1,10 +1,10 @@
 import { useUserStore } from '@/store/userStore'
 import { saveUserName } from '@/utils/userNameStorage';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Home = () => {
-  const { setUserName } = useUserStore();
+  const { userName, setUserName } = useUserStore();
   const navigate = useNavigate();
   const [inputName, setInputName] = useState('');
 
@@ -26,6 +26,10 @@ const Home = () => {
     saveUserName(inputName);
     setUserName(inputName);
     navigate("/todo");
+  }
+
+  if (userName) {
+    return <Navigate to="/todo" replace />;
   }
 
   return (

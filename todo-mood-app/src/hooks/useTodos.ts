@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { 
   getTodos, addTodos, 
   updateTodoCompleted, updateTodoOrderIndex, 
-  deleteTodo, modifyTodo 
+  deleteTodo, deleteTodos, modifyTodo 
 } from '@/services/todo'
 
 import { useUserStore } from "@/store/userStore";
@@ -30,6 +30,10 @@ type UpdateTodoOrderIndexParams = {
 
 type DeleteTodoParams = {
   id: number;
+};
+
+type DeleteTodosParams = {
+  ids: number[];
 };
 
 type ModifyTodoParams = {
@@ -109,6 +113,23 @@ export const useDeleteTodo = () => {
 
   return useMutation({
     mutationFn : (todo:DeleteTodoParams) => deleteTodo(todo.id),
+    onSuccess : () => {
+      queryClient.invalidateQueries({ queryKey: ["todos", userName, selectedDate.format('YYYY-MM-DD')] })
+    },
+    onError : (error) => {
+      console.error('에러 발생 : ', error)
+    }
+  })
+}
+
+// 여러 항목 삭제
+export const useDeleteTodos = () => {
+  const queryClient = useQueryClient();
+  const { userName } = useUserStore();
+  const { selectedDate } = useSelectedDateStore();
+
+  return useMutation({
+    mutationFn : (todo:DeleteTodosParams) => deleteTodos(todo.ids),
     onSuccess : () => {
       queryClient.invalidateQueries({ queryKey: ["todos", userName, selectedDate.format('YYYY-MM-DD')] })
     },

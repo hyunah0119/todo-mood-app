@@ -71,14 +71,15 @@ const TodoListItems = (
   };
 
   const isSelected = selectedTodoIds.includes(id);
+  const checkboxId = `todo-checkbox-${id}`;
 
   return (
     <>
       <div
         className={`flex justify-between items-center
         rounded-lg ${completed ? 'bg-neutral-200 dark:bg-black' : 'bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800'}
-        shadow-md px-2.5 py-2.5 box-border mb-2 transition-colors duration-200 cursor-pointer`}
-        onClick={isDeleteMode ? () => onToggleSelectTodo(id) : handleOnCompleted}
+        shadow-md px-2.5 py-2.5 box-border mb-2 transition-colors duration-200 ${isSortMode ? '' : 'cursor-pointer'}`}
+        onClick={isDeleteMode ? () => onToggleSelectTodo(id) : isSortMode ? undefined : handleOnCompleted}
       >
         {modifyMode ? (
           <div className="w-full" onClick={(e) => e.stopPropagation()}>
@@ -105,7 +106,7 @@ const TodoListItems = (
           <>
             <div className="flex items-center">
               {isSortMode && !completed && <MdDragIndicator className="text-lg mr-2" />}
-              <input type="checkbox" id="todo-checkbox" />
+              <input type="checkbox" id={checkboxId} />
               <div className="flex items-center gap-2">
                 {isDeleteMode ? (
                   <>
@@ -113,7 +114,7 @@ const TodoListItems = (
                       ${isSelected ? 'bg-neutral-500 text-white' : ''}`}>
                       {isSelected && <FaCheck />}
                     </span>
-                    <label htmlFor="todo-checkbox" className={`cursor-pointer ${completed ? 'line-through italic dark:text-neutral-500' : ''}`}>{text}</label>
+                    <label htmlFor={checkboxId} className={`cursor-pointer ${completed ? 'line-through italic dark:text-neutral-500' : ''}`}>{text}</label>
                   </>
                 ) : (
                   <>
@@ -122,7 +123,7 @@ const TodoListItems = (
                     >
                       {completed && <FaCheck />}
                     </span>
-                    <label htmlFor="todo-checkbox" className={`cursor-pointer ${completed ? 'line-through italic dark:text-neutral-500' : ''}`}>{text}</label>
+                    <label htmlFor={checkboxId} className={`cursor-pointer ${completed ? 'line-through italic dark:text-neutral-500' : ''}`}>{text}</label>
                   </>
                 )}
               </div>

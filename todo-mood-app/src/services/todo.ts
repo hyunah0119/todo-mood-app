@@ -84,6 +84,20 @@ export const deleteTodo = async (id:number) => {
   return data;
 }
 
+// 여러 항목 삭제
+export const deleteTodos = async (ids:number[]) => {
+  const { data, error } = await supabase
+    .from('todos')
+    .delete()
+    .in('id', ids)
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
 // 수정
 export const modifyTodo = async (id:number, text:string) => {
   const { data, error } = await supabase

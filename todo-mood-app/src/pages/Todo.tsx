@@ -1,7 +1,7 @@
 import { useTodos } from "@/hooks/useTodos";
 import { useUserStore } from "@/store/userStore";
 import { useSelectedDateStore } from "@/store/selectedDateStore";
-import { useDeleteTodo } from "@/hooks/useTodos";
+import { useDeleteTodos } from "@/hooks/useTodos";
 
 import TodayMoodCard from "@/components/todo/TodayMoodCard"
 import DateSelector from "@/components/todo/DateSelector"
@@ -16,7 +16,7 @@ type FilterType = "all" | "complete" | "incomplete";
 const Todo = () => {
   const { userName } = useUserStore();
   const { selectedDate } = useSelectedDateStore();
-  const { data } = useTodos(userName, selectedDate.format('YYYY-MM-DD'));
+  const { data, isLoading, isError, refetch } = useTodos(userName, selectedDate.format('YYYY-MM-DD'));
 
   const [filter, setFilter] = useState<FilterType>("all");
   const [isSortMode, setIsSortMode] = useState(false);
@@ -33,6 +33,11 @@ const Todo = () => {
 
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedTodoIds, setSelectedTodoIds] = useState<number[]>([]);
+  const todoListKey = [
+    selectedDate.format('YYYY-MM-DD'),
+    filter,
+    data?.map(todo => `${todo.id}:${todo.completed}:${todo.order_index}:${todo.text}`).join('|') ?? 'empty',
+  ].join('-');
 
   const handleToggleSelectTodo = (id:number) => {
     setSelectedTodoIds(prev =>
@@ -40,7 +45,7 @@ const Todo = () => {
     )
   }
 
-  const { mutate:deleteTodoMutate } = useDeleteTodo();
+  const { mutate:deleteTodosMutate } = useDeleteTodos();
 
   const handleDeleteSelectedTodos = () => {
     if (selectedTodoIds.length === 0) {
@@ -48,12 +53,38 @@ const Todo = () => {
       return;
     }
 
-    selectedTodoIds.forEach(id => {
-      deleteTodoMutate({ id });
-    });
-    
-    setIsDeleteMode(false);
-    setSelectedTodoIds([]);
+    deleteTodosMutate(
+      { ids: selectedTodoIds },
+      {
+        onSuccess: () => {
+          setIsDeleteMode(false);
+          setSelectedTodoIds([]);
+        },
+      }
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full py-2 px-5 flex items-center justify-center text-sm text-neutral-500">
+        할 일을 불러오는 중입니다.
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full h-full py-2 px-5 flex flex-col items-center justify-center gap-3 text-sm text-neutral-500">
+        <p>할 일을 불러오지 못했습니다.</p>
+        <button
+          type="button"
+          className="border rounded-md px-3 py-1 text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
+          onClick={() => refetch()}
+        >
+          다시 시도
+        </button>
+      </div>
+    )
   }
 
   return (
@@ -81,6 +112,7 @@ const Todo = () => {
       <TodoProgressBar todos={data ?? []} />
       <div className="min-h-0 flex-1 flex flex-col" onClick={(e) => e.stopPropagation()}>
         <TodoList 
+          key={todoListKey}
           todos={filteredTodos} 
           filter={filter} 
           isSortMode={isSortMode}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TodoListItems from "./TodoListItems";
 import { useUpdateTodoOrderIndex } from "@/hooks/useTodos";
 import EmptyTodo from "./EmptyTodo";
@@ -23,10 +23,6 @@ const TodoList = ({ todos, filter, isSortMode, isDeleteMode, selectedTodoIds, on
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [localTodos, setLocalTodos] = useState<Todo[]>(todos);
   const { mutate } = useUpdateTodoOrderIndex();
-
-  useEffect(() => {
-    setLocalTodos(todos);
-  }, [todos]);
 
   // 완료 항목 아래로 재배열
   const handleToggleCompleted = (id:number) => {

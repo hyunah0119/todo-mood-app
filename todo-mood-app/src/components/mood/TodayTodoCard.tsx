@@ -1,6 +1,5 @@
 import type { Todo } from "@/types/todo";
 import { NavLink } from "react-router-dom";
-import dayjs from "dayjs";
 
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 
@@ -9,8 +8,7 @@ interface TodayTodoCardProps {
 }
 
 const TodayTodoCard = ({ todos = [] }: TodayTodoCardProps) => {
-
-  const todayTodoCount = todos.filter(todo => todo.date === dayjs().format('YYYY-MM-DD')).length;
+  const todayTodoCount = todos.length;
 
   return (
     <div className="flex justify-end">
