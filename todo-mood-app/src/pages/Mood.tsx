@@ -7,17 +7,24 @@ import { useUserStore } from "@/store/userStore"
 import { useTodos } from "@/hooks/useTodos";
 import { useMood } from "@/hooks/useMood"
 import dayjs from "dayjs";
+import { useEffect, useRef } from "react";
 
 const Mood = () => {
   const { userName } = useUserStore();
   const { selectedDate } = useSelectedDateStore();
+  const scrollRef = useRef<HTMLDivElement>(null);
   const { data: todoData, isLoading: isTodoLoading, isError: isTodoError, refetch: refetchTodos } = useTodos(userName, dayjs().format("YYYY-MM-DD"));
-  const { data: moodData, isLoading: isMoodLoading, isError: isMoodError, refetch: refetchMood } = useMood(userName, selectedDate.format("YYYY-MM-DD"));
+  const selectedDateKey = selectedDate.format("YYYY-MM-DD");
+  const { data: moodData, isLoading: isMoodLoading, isError: isMoodError, refetch: refetchMood } = useMood(userName, selectedDateKey);
 
   const MoodsData = moodData?.[0]
 
   const mood = MoodsData?.mood;
   const memo = MoodsData?.memo;
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [selectedDateKey, mood, memo]);
 
   if (isTodoLoading || isMoodLoading) {
     return (
@@ -46,11 +53,11 @@ const Mood = () => {
   }
 
   return (
-    <div className="todo-scrollbar w-full h-full min-h-0 py-2 px-5 flex flex-col overflow-x-hidden overflow-y-auto">
+    <div ref={scrollRef} className="todo-scrollbar w-full h-full min-h-0 py-2 px-5 flex flex-col overflow-x-hidden overflow-y-auto">
       <TodayTodoCard todos={todoData ?? []} />
       <MoodCalendar />
       <MoodList 
-        key={selectedDate.format("YYYY-MM-DD")}
+        key={selectedDateKey}
         selectedDate={selectedDate}
         mood={mood}
         memo={memo}
