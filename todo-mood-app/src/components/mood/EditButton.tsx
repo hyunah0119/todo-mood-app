@@ -10,7 +10,7 @@ const EditButton = ({ ariaLabel, onClick, children, disabled }: EditButtonProps)
     <button 
       type="button" 
       aria-label={ariaLabel}
-      className={`text-2xl ${disabled ? 'text-neutral-400 cursor-default' : 'cursor-pointer'}`}
+      className={`text-2xl ${disabled ? 'text-neutral-400 dark:text-neutral-500 cursor-default' : 'cursor-pointer'}`}
       onClick={onClick}
       disabled={disabled}
     >

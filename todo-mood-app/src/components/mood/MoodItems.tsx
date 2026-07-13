@@ -16,7 +16,7 @@ const MoodItems = ({ selectedMood, isEditingMood }: MoodItemsProps) => {
       ) : (
         <>
           {selectedMood ? (
-            <div className="flex items-center justify-between rounded-md shadow-md p-2.5 relative">
+            <div className="flex items-center justify-between rounded-md shadow-md mt-2.5 p-2.5 relative dark:bg-neutral-700 dark:shadow-none">
               <div className="flex items-center gap-5">
                 <div className="text-3xl">
                   {MoodOptions[selectedMood].emoji}

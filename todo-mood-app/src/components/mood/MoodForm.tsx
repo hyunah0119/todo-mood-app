@@ -140,7 +140,7 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, onCloseMoodForm, isMood
 
       {/* 기분 선택 */}
       {isMoodFormVisible && 
-        <div className="w-full rounded-md shadow-md px-2.5 py-3.75 mt-5">
+        <div className="w-full rounded-md shadow-md px-2.5 py-3.75 mt-5 dark:bg-neutral-700 dark:shadow-none">
           <Swiper
             spaceBetween={10}
             slidesPerView={4.5}
@@ -157,8 +157,8 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, onCloseMoodForm, isMood
                     onClick={() => onSelectedMood(moodKey)}
                     className={`text-3xl border-2 rounded-full p-2 cursor-pointer 
                       ${isSelected
-                        ? 'border-amber-400 bg-amber-100'
-                        : 'border-neutral-100 bg-neutral-100'
+                        ? 'border-amber-400 bg-amber-100 dark:bg-neutral-400'
+                        : 'border-neutral-100 bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-500'
                     }`}
                   >
                     {value.emoji}

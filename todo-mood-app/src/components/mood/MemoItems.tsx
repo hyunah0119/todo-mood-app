@@ -13,7 +13,7 @@ const MemoItems = ({ memo, isMemoFormVisible, isEditingMemo }: MemoItemsProps) =
       ) : (
         <>
           {memo ? (
-            <div className="flex items-center justify-between rounded-md shadow-md p-2.5 relative">
+            <div className="flex items-center justify-between rounded-md shadow-md mt-2.5 p-2.5 relative dark:bg-neutral-700 dark:shadow-none">
               <textarea 
                 className="w-full h-full text-sm resize-none outline-0 bg-transparent p-2.5"
                 disabled
