@@ -2,10 +2,11 @@ import Header from "@/components/common/Header"
 import Footer from "@/components/common/Footer"
 import { Outlet } from 'react-router-dom'
 import { useThemeStore } from '@/store/themeStore'
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 const MainLayout = () => {
   const { isDarkMode } = useThemeStore();
+  const [isTextInputFocused, setIsTextInputFocused] = useState(false);
 
   useEffect(() => {
     const setAppHeight = () => {
@@ -17,12 +18,44 @@ const MainLayout = () => {
 
     window.addEventListener("resize", setAppHeight);
     window.visualViewport?.addEventListener("resize", setAppHeight);
-    window.visualViewport?.addEventListener("scroll", setAppHeight);
 
     return () => {
       window.removeEventListener("resize", setAppHeight);
       window.visualViewport?.removeEventListener("resize", setAppHeight);
-      window.visualViewport?.removeEventListener("scroll", setAppHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    const isTextEntryElement = (target: EventTarget | null) => {
+      if (!(target instanceof HTMLElement)) return false;
+
+      if (target.matches("textarea, select, [contenteditable='true']")) return true;
+
+      if (target instanceof HTMLInputElement) {
+        return !["button", "checkbox", "radio", "reset", "submit"].includes(target.type);
+      }
+
+      return false;
+    }
+
+    const handleFocusIn = (event: FocusEvent) => {
+      if (isTextEntryElement(event.target)) {
+        setIsTextInputFocused(true);
+      }
+    }
+
+    const handleFocusOut = () => {
+      window.setTimeout(() => {
+        setIsTextInputFocused(isTextEntryElement(document.activeElement));
+      }, 150);
+    }
+
+    document.addEventListener("focusin", handleFocusIn);
+    document.addEventListener("focusout", handleFocusOut);
+
+    return () => {
+      document.removeEventListener("focusin", handleFocusIn);
+      document.removeEventListener("focusout", handleFocusOut);
     }
   }, []);
 
@@ -34,7 +67,7 @@ const MainLayout = () => {
           <div className="flex flex-1 min-h-0 w-full flex-col overflow-hidden">
             <Outlet />
           </div>
-          <Footer />
+          {!isTextInputFocused && <Footer />}
         </div>
       </div>
     </div>
