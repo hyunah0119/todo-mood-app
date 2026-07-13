@@ -26,6 +26,13 @@
   --font-pretendard: "Pretendard", sans-serif;
 }
 
+/* iOS long-press callout prevention */
+.touch-callout-none {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* day picker custom */
 .rdp-root {
   --rdp-accent-color: #000 !important;

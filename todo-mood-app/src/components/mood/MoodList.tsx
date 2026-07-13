@@ -51,7 +51,7 @@ const MoodList = ({ selectedDate, mood, memo }: MoodListProps) => {
   }
 
   return (
-    <div className="mt-7.5">
+    <div className="mt-7.5 pb-10">
       <p className="text-lg font-medium">{selectedDate.format('MM월 DD일 (dd)')}</p>
 
       <div>

@@ -28,7 +28,7 @@ const SortableTodoListItem = ({ id, children }: SortableTodoListItemProps) => {
         ref={setActivatorNodeRef}
         type="button"
         aria-label="할 일 순서 변경"
-        className="mb-2 flex w-8 shrink-0 touch-none cursor-grab items-center justify-center rounded-lg bg-neutral-100 text-xl text-neutral-500 active:cursor-grabbing dark:bg-neutral-700 dark:text-neutral-300"
+        className="touch-callout-none mb-2 flex w-8 shrink-0 touch-none cursor-grab items-center justify-center rounded-lg bg-neutral-100 text-xl text-neutral-500 active:cursor-grabbing dark:bg-neutral-700 dark:text-neutral-300"
         style={{ touchAction: "none" }}
         {...attributes}
         {...listeners}
