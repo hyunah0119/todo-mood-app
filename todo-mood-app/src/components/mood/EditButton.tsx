@@ -2,15 +2,17 @@ type EditButtonProps = {
   ariaLabel: string;
   onClick: () => void;
   children: React.ReactNode;
+  disabled?: boolean;
 }
 
-const EditButton = ({ ariaLabel, onClick, children }: EditButtonProps) => {
+const EditButton = ({ ariaLabel, onClick, children, disabled }: EditButtonProps) => {
   return (
     <button 
       type="button" 
       aria-label={ariaLabel}
-      className="text-2xl cursor-pointer"
+      className={`text-2xl ${disabled ? 'text-neutral-400 cursor-default' : 'cursor-pointer'}`}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>

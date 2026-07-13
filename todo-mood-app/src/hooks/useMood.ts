@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { MoodKey } from "@/types/mood";
 
-import { getMood, addMood, addMemo, updateMood, updateMemo, deleteMemo } from '@/services/mood'
+import { getMood, addMood, addMemo, updateMood, updateMemo, deleteMemo, deleteMood } from '@/services/mood'
 import { useUserStore } from "@/store/userStore";
 import { useSelectedDateStore } from "@/store/selectedDateStore";
 
@@ -106,6 +106,23 @@ export const useDeleteMemo = () => {
 
   return useMutation({
     mutationFn : () => deleteMemo(userName, selectedDate.format('YYYY-MM-DD')),
+    onSuccess : () => {
+      queryClient.invalidateQueries({ queryKey: ["moods", userName, selectedDate.format('YYYY-MM-DD')] })
+    },
+    onError : (error) => {
+      console.error('에러 발생 : ', error)
+    }
+  })
+}
+
+// mood 삭제
+export const useDeleteMood = () => {
+  const queryClient = useQueryClient();
+  const { userName } = useUserStore();
+  const { selectedDate } = useSelectedDateStore();
+
+  return useMutation({
+    mutationFn : () => deleteMood(userName, selectedDate.format('YYYY-MM-DD')),
     onSuccess : () => {
       queryClient.invalidateQueries({ queryKey: ["moods", userName, selectedDate.format('YYYY-MM-DD')] })
     },

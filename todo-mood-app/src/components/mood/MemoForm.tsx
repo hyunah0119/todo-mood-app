@@ -1,4 +1,4 @@
-import { useAddMemo, useUpdateMemo } from '@/hooks/useMood';
+import { useAddMemo, useUpdateMemo, useDeleteMemo } from '@/hooks/useMood';
 
 import EditButton from './EditButton';
 
@@ -11,18 +11,22 @@ type MemoFormProps = {
   isMemoFormVisible: boolean;
   onToggleMemoForm: () => void;
   isMemoData: boolean | undefined;
+  memo: string | undefined;
   inputMemo: string;
   onInputMemo: (memo: string) => void;
   isEditingMemo: boolean;
   setIsEditingMemo: (isEditingMemo: boolean) => void;
 }
 
-const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData, inputMemo, onInputMemo, isEditingMemo, setIsEditingMemo }: MemoFormProps) => {
+const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData, memo, inputMemo, onInputMemo, isEditingMemo, setIsEditingMemo }: MemoFormProps) => {
   const { mutate: addMemo } = useAddMemo();
   const { mutate: updateMemo } = useUpdateMemo();
+  const { mutate: deleteMemo } = useDeleteMemo();
 
   // 메모 수정 모드 진입
   const handleEditMemo = () => {
+    onInputMemo(memo ?? '');
+
     if (!isMemoFormVisible) {
       onToggleMemoForm();
     }
@@ -67,6 +71,26 @@ const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData, inputMemo, 
     }
   }
 
+  // 메모 삭제
+  const handleDeleteMemo = () => {
+    const isConfirmed = confirm('메모가 삭제됩니다. 삭제하시겠습니까?');
+
+    if (!isConfirmed) return;
+
+    deleteMemo(undefined, {
+      onSuccess: () => {
+        if (isMemoFormVisible) {
+          onToggleMemoForm();
+        }
+        onInputMemo('');
+        setIsEditingMemo(false);
+      },
+      onError: (error) => {
+        console.error('에러 발생 : ', error);
+      }
+    });
+  }
+  
   return (
     <div className="mt-5">
       <div className="flex items-center justify-between">
@@ -83,7 +107,8 @@ const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData, inputMemo, 
               </EditButton>
               <EditButton 
                 ariaLabel="메모 삭제"
-                onClick={() => {}}
+                onClick={handleDeleteMemo}
+                disabled={isEditingMemo}
               >
                 <BiMessageRoundedX />
               </EditButton>

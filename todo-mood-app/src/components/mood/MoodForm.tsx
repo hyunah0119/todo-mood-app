@@ -1,5 +1,5 @@
 import { MoodOptions, type MoodKey } from '@/types/mood'
-import { useAddMood, useUpdateMood } from '@/hooks/useMood';
+import { useAddMood, useUpdateMood, useDeleteMood } from '@/hooks/useMood';
 import { useUserStore } from '@/store/userStore';
 import { useSelectedDateStore } from '@/store/selectedDateStore';
 
@@ -15,6 +15,7 @@ import { TbMoodCheck } from "react-icons/tb";
 type MoodFormProps = {
   isMoodFormVisible: boolean;
   onToggleMoodForm: () => void;
+  onCloseMoodForm: () => void;
   isMoodData: boolean | undefined;
   selectedMood: MoodKey | null;
   onSelectedMood: (mood: MoodKey | null) => void;
@@ -22,11 +23,12 @@ type MoodFormProps = {
   setIsEditingMood: (isEditingMood: boolean) => void;
 }
 
-const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMood, onSelectedMood, isEditingMood, setIsEditingMood }: MoodFormProps) => {
+const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, onCloseMoodForm, isMoodData, selectedMood, onSelectedMood, isEditingMood, setIsEditingMood }: MoodFormProps) => {
   const { userName } = useUserStore();
   const { selectedDate } = useSelectedDateStore();
   const { mutate: addMood } = useAddMood();
   const { mutate: updateMood } = useUpdateMood();
+  const { mutate: deleteMood } = useDeleteMood();
 
   // mood 수정 모드 진입
   const handleEditMood = () => {
@@ -46,7 +48,8 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMoo
       },
       {
         onSuccess: () => {
-          onToggleMoodForm();
+          onCloseMoodForm();
+          onSelectedMood(null);
         },
         onError: (error) => {
           console.error('에러 발생 : ', error);
@@ -64,18 +67,33 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMoo
       },
       {
         onSuccess: () => {
-          if (isMoodFormVisible) {
-            onToggleMoodForm();
-          }
+          onCloseMoodForm();
           onSelectedMood(null);
           setIsEditingMood(false);
         },
         onError: (error) => {
           console.error('에러 발생 : ', error);
         }
-      }
-    );
+      });
     }
+  }
+
+  // mood 삭제
+  const handleDeleteMood = () => {
+    const isConfirmed = confirm('오늘의 기분 및 메모가 삭제됩니다. 삭제하시겠습니까?');
+
+    if (!isConfirmed) return;
+
+    deleteMood(undefined, {
+      onSuccess: () => {
+        onCloseMoodForm();
+        onSelectedMood(null);
+        setIsEditingMood(false);
+      },
+      onError: (error) => {
+        console.error('에러 발생 : ', error);
+      }
+    });
   }
 
   return (
@@ -94,7 +112,8 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMoo
               </EditButton>
               <EditButton 
                 ariaLabel="기분 삭제"
-                onClick={() => {}}
+                onClick={handleDeleteMood}
+                disabled={isEditingMood}
               >
                 <TbMoodX />
               </EditButton>

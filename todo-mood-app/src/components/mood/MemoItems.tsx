@@ -4,7 +4,6 @@ type MemoItemsProps = {
   isEditingMemo: boolean;
 }
 
-
 const MemoItems = ({ memo, isMemoFormVisible, isEditingMemo }: MemoItemsProps) => {
   return (
     <>

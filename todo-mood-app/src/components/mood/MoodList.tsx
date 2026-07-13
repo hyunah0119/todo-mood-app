@@ -19,7 +19,6 @@ const MoodList = ({ selectedDate, mood, memo }: MoodListProps) => {
   const [isMemoFormVisible, setIsMemoFormVisible] = useState(false);
 
   const [selectedMood, setSelectedMood] = useState<MoodKey | null>(null);
-  const displayMood = selectedMood ?? mood ?? null;
   const [isEditingMood, setIsEditingMood] = useState(false);
 
   const [inputMemo, setInputMemo] = useState<string>('');
@@ -28,6 +27,10 @@ const MoodList = ({ selectedDate, mood, memo }: MoodListProps) => {
   const handleToggleMoodForm = () => {
     setIsMoodFormVisible(prev => !prev);
     setIsMemoFormVisible(false);
+  }
+
+  const handleCloseMoodForm = () => {
+    setIsMoodFormVisible(false);
   }
 
   const handleToggleMemoForm = () => {
@@ -43,6 +46,7 @@ const MoodList = ({ selectedDate, mood, memo }: MoodListProps) => {
         <MoodForm 
           isMoodFormVisible={isMoodFormVisible} 
           onToggleMoodForm={handleToggleMoodForm} 
+          onCloseMoodForm={handleCloseMoodForm}
           isMoodData={!!mood}
           selectedMood={selectedMood}
           onSelectedMood={setSelectedMood}
@@ -50,7 +54,7 @@ const MoodList = ({ selectedDate, mood, memo }: MoodListProps) => {
           setIsEditingMood={setIsEditingMood}
         />
         <MoodItems 
-          selectedMood={displayMood}
+          selectedMood={mood ?? null}
           isEditingMood={isEditingMood}
         />
       </div>
@@ -60,6 +64,7 @@ const MoodList = ({ selectedDate, mood, memo }: MoodListProps) => {
             isMemoFormVisible={isMemoFormVisible} 
             onToggleMemoForm={handleToggleMemoForm} 
             isMemoData={!!memo}
+            memo={memo}
             inputMemo={inputMemo}
             onInputMemo={setInputMemo}
             isEditingMemo={isEditingMemo}

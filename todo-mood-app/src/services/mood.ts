@@ -102,3 +102,18 @@ export const deleteMemo = async (user_name:string, date:string) => {
 
   return data;
 }
+
+// mood 삭제
+export const deleteMood = async (user_name:string, date:string) => {
+  const { data, error } = await supabase
+    .from('moods')
+    .delete()
+    .eq('user_name', user_name)
+    .eq('date', date)
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
