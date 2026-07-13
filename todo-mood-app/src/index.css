@@ -26,10 +26,6 @@
   --font-pretendard: "Pretendard", sans-serif;
 }
 
-:root {
-  --app-height: 100dvh;
-}
-
 /* iOS long-press callout prevention */
 .touch-callout-none {
   -webkit-touch-callout: none;
