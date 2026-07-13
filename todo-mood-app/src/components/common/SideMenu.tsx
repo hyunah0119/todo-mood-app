@@ -48,7 +48,7 @@ const SideMenu = ({ menuOpen, onClick, onClose, userName } : HeaderProps) => {
         onClick={onClose}
       ></div>
       <div 
-        className={`absolute top-0 right-0 h-screen w-80 bg-white dark:bg-neutral-800 flex flex-col justify-between pb-8 transition-transform duration-250 ease-in-out z-100
+        className={`absolute top-0 right-0 h-dvh w-80 bg-white dark:bg-neutral-800 flex flex-col justify-between overflow-y-auto pb-[calc(2rem+env(safe-area-inset-bottom))] transition-transform duration-250 ease-in-out z-100
         ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
         onClick={(e) => e.stopPropagation()}
       >
