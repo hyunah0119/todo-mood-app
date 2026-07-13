@@ -1,20 +1,23 @@
+import type { MoodKey } from '@/types/mood';
+import { MoodOptions } from '@/types/mood';
+
 type MoodItemsProps = {
-  isMoodData: boolean | undefined;
+  selectedMood: MoodKey | null;
 }
 
-const MoodItems = ({ isMoodData }: MoodItemsProps) => {
+const MoodItems = ({ selectedMood }: MoodItemsProps) => {
   return (
     <>
-      {isMoodData ? (
+      {selectedMood ? (
         <div className="flex items-center justify-between rounded-md shadow-md p-2.5 relative">
           <div className="flex items-center gap-5">
             <div className="text-3xl">
-              🤩
+              {MoodOptions[selectedMood].emoji}
             </div>
       
             <div>
-              <p className="text-lg font-bold tracking-wide font-pretendard">행복</p>
-              <span className="text-sm text-neutral-500 font-medium">HAPPY</span>
+              <p className="text-lg font-bold tracking-wide font-pretendard">{MoodOptions[selectedMood].text}</p>
+              <span className="text-sm text-neutral-500 font-medium">{selectedMood}</span>
             </div>
           </div>
         </div>

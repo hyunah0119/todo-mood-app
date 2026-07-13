@@ -1,10 +1,12 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
+import { MoodOptions, type MoodKey } from '@/types/mood'
+import { useAddMood } from '@/hooks/useMood';
+import { useUserStore } from '@/store/userStore';
+import { useSelectedDateStore } from '@/store/selectedDateStore';
 
 import EditButton from './EditButton';
-import { MoodOptions } from '@/types/mood'
-import type { MoodKey } from '@/types/mood'
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 import { TbMoodPlus } from "react-icons/tb";
 import { TbMoodEdit } from "react-icons/tb";
 import { TbMoodX } from "react-icons/tb";
@@ -14,9 +16,34 @@ type MoodFormProps = {
   isMoodFormVisible: boolean;
   onToggleMoodForm: () => void;
   isMoodData: boolean | undefined;
+  selectedMood: MoodKey | null;
+  onSelectedMood: (mood: MoodKey) => void;
 }
 
-const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData }: MoodFormProps) => {
+const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMood, onSelectedMood }: MoodFormProps) => {
+  const { userName } = useUserStore();
+  const { selectedDate } = useSelectedDateStore();
+  const { mutate: addMood } = useAddMood();
+
+  const handleAddMood = () => {
+    if (selectedMood) {
+      addMood({
+        user_name: userName,
+        date: selectedDate.format('YYYY-MM-DD'),
+        mood: selectedMood
+      },
+      {
+        onSuccess: () => {
+          onToggleMoodForm();
+        },
+        onError: (error) => {
+          console.error('에러 발생 : ', error);
+        }
+      }
+    );
+    }
+  }
+
   return (
     <div className="mt-5">
       <div className="flex items-center justify-between">
@@ -27,7 +54,7 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData }: MoodFormP
             <>
               <EditButton 
                 ariaLabel="기분 저장"
-                onClick={() => {}}
+                onClick={handleAddMood}
               >
                 <TbMoodCheck />
               </EditButton>
@@ -48,7 +75,7 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData }: MoodFormP
             isMoodFormVisible ? (
               <EditButton 
                 ariaLabel="기분 저장"
-                onClick={() => {}}
+                onClick={handleAddMood}
               >
                 <TbMoodCheck />
               </EditButton>
@@ -71,15 +98,27 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData }: MoodFormP
             spaceBetween={10}
             slidesPerView={4.5}
           >
-            {Object.entries(MoodOptions).map(([key, value]) => (
-              <SwiperSlide key={key}>
-                <button 
-                  type="button" 
-                  aria-label={value.text}
-                  className="text-3xl border-2 border-neutral-100 active:border-amber-400 bg-neutral-100 rounded-full p-2 cursor-pointer"
-                >{value.emoji}</button>
-              </SwiperSlide>
-            ))}
+            {Object.entries(MoodOptions).map(([key, value]) => {
+              const moodKey = key as MoodKey;
+              const isSelected = selectedMood === moodKey;
+
+              return (
+                <SwiperSlide key={key}>
+                  <button 
+                    type="button"
+                    aria-label={value.text}
+                    onClick={() => onSelectedMood(moodKey)}
+                    className={`text-3xl border-2 rounded-full p-2 cursor-pointer 
+                      ${isSelected
+                        ? 'border-amber-400 bg-amber-100'
+                        : 'border-neutral-100 bg-neutral-100'
+                    }`}
+                  >
+                    {value.emoji}
+                  </button>
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         </div>
       }

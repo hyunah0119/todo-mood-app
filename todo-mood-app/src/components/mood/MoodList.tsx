@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Dayjs } from "dayjs";
 
-import { useAddMood } from "@/hooks/useMood";
+import type { MoodKey } from '@/types/mood'
 
 import MoodForm from "./MoodForm";
 import MemoForm from "./MemoForm";
@@ -9,17 +9,17 @@ import MoodItems from "./MoodItems";
 import MemoItems from "./MemoItems";
 
 interface MoodListProps {
-  isMoodData: boolean | undefined;
-  isMemoData: boolean | undefined;
   selectedDate: Dayjs;
+  mood: MoodKey | undefined;
+  memo: string | undefined;
 }
 
-const MoodList = ({ selectedDate, isMoodData, isMemoData }: MoodListProps) => {
+const MoodList = ({ selectedDate, mood, memo }: MoodListProps) => {
   const [isMoodFormVisible, setIsMoodFormVisible] = useState(false);
   const [isMemoFormVisible, setIsMemoFormVisible] = useState(false);
 
-  const { mutate: addMood } = useAddMood();
-
+  const [selectedMood, setSelectedMood] = useState<MoodKey | null>(null);
+  const displayMood = selectedMood ?? mood ?? null;
 
   const handleToggleMoodForm = () => {
     setIsMoodFormVisible(prev => !prev);
@@ -39,21 +39,23 @@ const MoodList = ({ selectedDate, isMoodData, isMemoData }: MoodListProps) => {
         <MoodForm 
           isMoodFormVisible={isMoodFormVisible} 
           onToggleMoodForm={handleToggleMoodForm} 
-          isMoodData={isMoodData}
+          isMoodData={!!mood}
+          selectedMood={selectedMood}
+          onSelectedMood={setSelectedMood}
         />
         <MoodItems 
-          isMoodData={isMoodData}
+          selectedMood={displayMood}
         />
       </div>
-      {isMoodData &&
+      {mood &&
         <div className="mt-7.5">
           <MemoForm 
             isMemoFormVisible={isMemoFormVisible} 
             onToggleMemoForm={handleToggleMemoForm} 
-            isMemoData={isMemoData}
+            isMemoData={!!memo}
           />
           <MemoItems 
-            isMemoData={isMemoData}
+            memo={memo}
           />
         </div>
       }

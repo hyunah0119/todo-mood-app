@@ -1,16 +1,16 @@
 type MemoItemsProps = {
-  isMemoData: boolean | undefined;
+  memo: string | undefined;
 }
 
-const MemoItems = ({ isMemoData }: MemoItemsProps) => {
+const MemoItems = ({ memo }: MemoItemsProps) => {
   return (
     <>
-      {isMemoData ? (
+      {memo ? (
         <div className="flex items-center justify-between rounded-md shadow-md p-2.5 relative">
           <textarea 
             className="w-full h-full text-sm resize-none outline-0 bg-transparent p-2.5"
             disabled
-            value={'오늘은 기분이 별로..'}
+            value={memo}
           ></textarea>
         </div>
       ) : (

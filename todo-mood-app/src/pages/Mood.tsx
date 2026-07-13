@@ -15,8 +15,8 @@ const Mood = () => {
 
   const MoodsData = moodData?.[0]
 
-  const isMoodData = MoodsData?.mood;
-  const isMemoData = MoodsData?.memo;
+  const mood = MoodsData?.mood;
+  const memo = MoodsData?.memo;
 
   return (
     <div className="w-full h-full min-h-0 py-2 px-5 flex flex-col">
@@ -24,8 +24,8 @@ const Mood = () => {
       <MoodCalendar moodData={moodData ?? []} />
       <MoodList 
         selectedDate={selectedDate}
-        isMoodData={isMoodData} 
-        isMemoData={isMemoData}
+        mood={mood}
+        memo={memo}
       />
     </div>
   )
