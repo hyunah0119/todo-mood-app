@@ -1,3 +1,5 @@
+import { useAddMemo, useUpdateMemo } from '@/hooks/useMood';
+
 import EditButton from './EditButton';
 
 import { BiMessageRoundedAdd } from "react-icons/bi";
@@ -9,9 +11,62 @@ type MemoFormProps = {
   isMemoFormVisible: boolean;
   onToggleMemoForm: () => void;
   isMemoData: boolean | undefined;
+  inputMemo: string;
+  onInputMemo: (memo: string) => void;
+  isEditingMemo: boolean;
+  setIsEditingMemo: (isEditingMemo: boolean) => void;
 }
 
-const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData }: MemoFormProps) => {
+const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData, inputMemo, onInputMemo, isEditingMemo, setIsEditingMemo }: MemoFormProps) => {
+  const { mutate: addMemo } = useAddMemo();
+  const { mutate: updateMemo } = useUpdateMemo();
+
+  // 메모 수정 모드 진입
+  const handleEditMemo = () => {
+    if (!isMemoFormVisible) {
+      onToggleMemoForm();
+    }
+    setIsEditingMemo(true);
+  }
+  
+  // 메모 저장
+  const handleSaveMemo = () => {
+    if (inputMemo) {
+      addMemo({
+        memo: inputMemo
+      },
+      {
+        onSuccess: () => {
+          onToggleMemoForm();
+          onInputMemo('');
+        },
+        onError: (error) => {
+          console.error('에러 발생 : ', error);
+        }
+      });
+    }
+  }
+
+  // 메모 수정
+  const handleUpdateMemo = () => {
+    if (inputMemo) {
+      updateMemo({
+        memo: inputMemo
+      },
+      {
+        onSuccess: () => {
+          if (isMemoFormVisible) {
+            onToggleMemoForm();
+          }
+          setIsEditingMemo(false);
+        },
+        onError: (error) => {
+          console.error('에러 발생 : ', error);
+        }
+      });
+    }
+  }
+
   return (
     <div className="mt-5">
       <div className="flex items-center justify-between">
@@ -21,16 +76,10 @@ const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData }: MemoFormP
           {isMemoData ? (
             <>
               <EditButton 
-                ariaLabel="메모 저장"
-                onClick={() => {}}
+                ariaLabel={isEditingMemo ? "메모 저장" : "메모 수정"}
+                onClick={isEditingMemo ? handleUpdateMemo : handleEditMemo}
               >
-                <BiMessageRoundedCheck />
-              </EditButton>
-              <EditButton 
-                ariaLabel="메모 수정"
-                onClick={() => {}}
-              >
-                <BiMessageRoundedEdit />
+                {isEditingMemo ? <BiMessageRoundedCheck /> : <BiMessageRoundedEdit />}
               </EditButton>
               <EditButton 
                 ariaLabel="메모 삭제"
@@ -43,7 +92,7 @@ const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData }: MemoFormP
             isMemoFormVisible ? (
               <EditButton 
                 ariaLabel="메모 저장"
-                onClick={() => {}}
+                onClick={handleSaveMemo}
               >
                 <BiMessageRoundedCheck />
               </EditButton>
@@ -65,7 +114,13 @@ const MoodForm = ({ isMemoFormVisible, onToggleMemoForm, isMemoData }: MemoFormP
           <textarea
             className="w-full h-24 rounded-md border p-2.5 resize-none"
             placeholder="오늘의 기분에 대한 메모를 입력해주세요."
+            maxLength={200}
+            value={inputMemo}
+            onChange={(e) => onInputMemo(e.target.value)}
           ></textarea>
+          <p className="text-sm text-neutral-500 font-medium text-right">
+            <span className='font-bold text-amber-500'>{inputMemo.length}</span>/200
+            </p>
         </div>
       }
     </div>

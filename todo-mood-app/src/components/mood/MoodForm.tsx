@@ -1,5 +1,5 @@
 import { MoodOptions, type MoodKey } from '@/types/mood'
-import { useAddMood } from '@/hooks/useMood';
+import { useAddMood, useUpdateMood } from '@/hooks/useMood';
 import { useUserStore } from '@/store/userStore';
 import { useSelectedDateStore } from '@/store/selectedDateStore';
 
@@ -17,14 +17,26 @@ type MoodFormProps = {
   onToggleMoodForm: () => void;
   isMoodData: boolean | undefined;
   selectedMood: MoodKey | null;
-  onSelectedMood: (mood: MoodKey) => void;
+  onSelectedMood: (mood: MoodKey | null) => void;
+  isEditingMood: boolean;
+  setIsEditingMood: (isEditingMood: boolean) => void;
 }
 
-const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMood, onSelectedMood }: MoodFormProps) => {
+const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMood, onSelectedMood, isEditingMood, setIsEditingMood }: MoodFormProps) => {
   const { userName } = useUserStore();
   const { selectedDate } = useSelectedDateStore();
   const { mutate: addMood } = useAddMood();
+  const { mutate: updateMood } = useUpdateMood();
 
+  // mood 수정 모드 진입
+  const handleEditMood = () => {
+    if (!isMoodFormVisible) {
+      onToggleMoodForm();
+    }
+    setIsEditingMood(true);
+  }
+
+  // mood 추가
   const handleAddMood = () => {
     if (selectedMood) {
       addMood({
@@ -44,6 +56,28 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMoo
     }
   }
 
+  // mood 수정
+  const handleUpdateMood = () => {
+    if (selectedMood) {
+      updateMood({
+        mood: selectedMood
+      },
+      {
+        onSuccess: () => {
+          if (isMoodFormVisible) {
+            onToggleMoodForm();
+          }
+          onSelectedMood(null);
+          setIsEditingMood(false);
+        },
+        onError: (error) => {
+          console.error('에러 발생 : ', error);
+        }
+      }
+    );
+    }
+  }
+
   return (
     <div className="mt-5">
       <div className="flex items-center justify-between">
@@ -53,16 +87,10 @@ const MoodForm = ({ isMoodFormVisible, onToggleMoodForm, isMoodData, selectedMoo
           {isMoodData ? (
             <>
               <EditButton 
-                ariaLabel="기분 저장"
-                onClick={handleAddMood}
+                ariaLabel={isEditingMood ? "기분 저장" : "기분 수정"}
+                onClick={isEditingMood ? handleUpdateMood : handleEditMood}
               >
-                <TbMoodCheck />
-              </EditButton>
-              <EditButton 
-                ariaLabel="기분 수정"
-                onClick={() => {}}
-              >
-                <TbMoodEdit />
+                {isEditingMood ? <TbMoodCheck /> : <TbMoodEdit />}
               </EditButton>
               <EditButton 
                 ariaLabel="기분 삭제"
