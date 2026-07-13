@@ -5,8 +5,8 @@ import EmptyTodo from "./EmptyTodo";
 import type { Todo } from '@/types/todo'
 import SortableTodoListItem from "./SortableTodoListItem";
 
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
+import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy, arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 type FilterType = "all" | "complete" | "incomplete";
 
@@ -23,6 +23,16 @@ const TodoList = ({ todos, filter, isSortMode, isDeleteMode, selectedTodoIds, on
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [localTodos, setLocalTodos] = useState<Todo[]>(todos);
   const { mutate } = useUpdateTodoOrderIndex();
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   // 완료 항목 아래로 재배열
   const handleToggleCompleted = (id:number) => {
@@ -79,13 +89,13 @@ const TodoList = ({ todos, filter, isSortMode, isDeleteMode, selectedTodoIds, on
     <div className="mt-5 min-h-0 flex-1 flex flex-col">
       <h3 className="text-sm tracking-wide font-medium text-neutral-400">오늘의 할 일</h3>
 
-      <div className="todo-scrollbar mt-3.75 min-h-0 flex-1 overflow-y-auto pr-1"> 
+      <div className="todo-scrollbar mt-3.75 min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-1"> 
         {sortedTodos.length === 0 ? (
           <EmptyTodo filter={filter} />
         ) : (
           <>
             {isSortMode && filter === "all" ? (
-              <DndContext onDragEnd={handleDragEnd}>
+              <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
                 <SortableContext items={nextIncompleteTodos.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
                   {nextIncompleteTodos.map((todo) => (
                     <SortableTodoListItem key={todo.id} id={todo.id}>

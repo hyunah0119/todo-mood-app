@@ -49,12 +49,14 @@ const Mood = () => {
     <div className="w-full h-full min-h-0 py-2 px-5 flex flex-col">
       <TodayTodoCard todos={todoData ?? []} />
       <MoodCalendar moodData={moodData ?? []} />
-      <MoodList 
-        key={selectedDate.format("YYYY-MM-DD")}
-        selectedDate={selectedDate}
-        mood={mood}
-        memo={memo}
-      />
+      <div className="todo-scrollbar min-h-0 flex-1 overflow-y-auto pb-5 pr-1">
+        <MoodList 
+          key={selectedDate.format("YYYY-MM-DD")}
+          selectedDate={selectedDate}
+          mood={mood}
+          memo={memo}
+        />
+      </div>
     </div>
   )
 }

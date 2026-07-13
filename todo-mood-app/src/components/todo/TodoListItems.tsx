@@ -5,7 +5,6 @@ import { useModifyTodo } from "@/hooks/useTodos";
 import { FaCheck } from "react-icons/fa6";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaCheckCircle } from "react-icons/fa";
-import { MdDragIndicator } from "react-icons/md";
 
 type todolistProps = {
   text : string
@@ -76,9 +75,9 @@ const TodoListItems = (
   return (
     <>
       <div
-        className={`flex justify-between items-center
+        className={`flex w-full min-w-0 justify-between items-center
         rounded-lg ${completed ? 'bg-neutral-200 dark:bg-black' : 'bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800'}
-        shadow-md px-2.5 py-2.5 box-border mb-2 transition-colors duration-200 ${isSortMode ? '' : 'cursor-pointer'}`}
+        shadow-md px-2.5 py-2.5 box-border mb-2 select-none transition-colors duration-200 ${isSortMode ? '' : 'cursor-pointer'}`}
         onClick={isDeleteMode ? () => onToggleSelectTodo(id) : isSortMode ? undefined : handleOnCompleted}
       >
         {modifyMode ? (
@@ -104,17 +103,16 @@ const TodoListItems = (
           </div>
         ) : (
           <>
-            <div className="flex items-center">
-              {isSortMode && !completed && <MdDragIndicator className="text-lg mr-2" />}
+            <div className="flex min-w-0 items-center">
               <input type="checkbox" id={checkboxId} />
-              <div className="flex items-center gap-2">
+              <div className="flex min-w-0 items-center gap-2">
                 {isDeleteMode ? (
                   <>
                     <span className={`w-3.75 h-3.75 border rounded-4xl flex justify-center items-center text-[10px] border-neutral-500 
                       ${isSelected ? 'bg-neutral-500 text-white' : ''}`}>
                       {isSelected && <FaCheck />}
                     </span>
-                    <label htmlFor={checkboxId} className={`cursor-pointer ${completed ? 'line-through italic dark:text-neutral-500' : ''}`}>{text}</label>
+                    <span className={`min-w-0 truncate cursor-pointer ${completed ? 'line-through italic dark:text-neutral-500' : ''}`}>{text}</span>
                   </>
                 ) : (
                   <>
@@ -123,13 +121,13 @@ const TodoListItems = (
                     >
                       {completed && <FaCheck />}
                     </span>
-                    <label htmlFor={checkboxId} className={`cursor-pointer ${completed ? 'line-through italic dark:text-neutral-500' : ''}`}>{text}</label>
+                    <span className={`min-w-0 truncate cursor-pointer ${completed ? 'line-through italic dark:text-neutral-500' : ''}`}>{text}</span>
                   </>
                 )}
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative shrink-0">
               <button 
                 className="block cursor-pointer text-lg" 
                 onClick={(e) => {

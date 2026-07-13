@@ -3,6 +3,9 @@
 오늘의 할 일과 감정을 함께 기록하는 데일리 투두 & 무드 트래커입니다.
 단순히 할 일을 체크하는 앱이 아니라, 하루의 생산성과 감정 상태를 같은 날짜 기준으로 연결해 기록할 수 있도록 만들었습니다.
 
+기존에 제작했던 Todo앱을 리뉴얼하며 TypeScript, TanStack Query, Zustand, Supabase를 적용하여
+날짜별 Todo 관리와 Mood Tracker 기능을 추가했습니다.
+
 ## 배포 링크
 - Demo: 준비 중
 - GitHub: 준비 중
